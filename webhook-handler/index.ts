@@ -2,32 +2,32 @@ import { AzureFunction, Context, HttpRequest, HttpMethod } from "@azure/function
 import fetch from 'node-fetch';
 
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
-    context.log('HTTP trigger function processed a request.');
-    switch (req.method) {
-        case "POST":
-            makeSubscription(context, req);
-        case "GET":
-            validateSubscription(context, req);
-            break;
-        default:
-            context.res = {
-                status: 500,
-                body: "Invalid Request"
-            }
+    try {
+        switch (req.method) {
+            case "POST":
+                await makeSubscription(context, req);
+                break;
+            case "GET":
+                await validateSubscription(context, req);
+                break;
+            default:
+                context.res = {
+                    status: 400,
+                    body: "Invalid Request"
+                }
+                break;
+        }
+    } catch (e) {
+        context.res = {
+            status: 500,
+            body: e.message,
+        }
     }
-    const name = (req.query.name || (req.body && req.body.name));
-    const responseMessage = name
-        ? "Hello, " + name + ". This HTTP triggered function executed successfully."
-        : "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.";
-
-    context.res = {
-        // status: 200, /* Defaults to 200 */
-        body: responseMessage
-    };
 
 };
 
 const makeSubscription = async function (context: Context, req: HttpRequest) {
+    context.log('makeSubscription');
     const stravaResponse = await fetch('https://www.strava.com/api/v3/push_subscriptions', {
         method: 'post',
         headers: req.headers,
@@ -36,11 +36,13 @@ const makeSubscription = async function (context: Context, req: HttpRequest) {
 
     const stravaResponseBody = await stravaResponse.json();
     context.res = {
+        status: stravaResponse.status,
         body: stravaResponseBody
-    }
+    };
 }
 
 const validateSubscription = function (context: Context, req: HttpRequest) {
+    context.log('validateSubscription');
     const mode = req.query['hub.mode'];
     const challenge = req.query['hub.challenge'];
     const verifyToken = req.query['hub.verify_token'];
