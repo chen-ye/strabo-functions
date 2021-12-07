@@ -58,10 +58,6 @@ typings/
 # Yarn Integrity file
 .yarn-integrity
 
-# dotenv environment variables file
-.env
-.env.test
-
 # parcel-bundler cache (https://parceljs.org/)
 .cache
 
@@ -97,7 +93,3 @@ local.settings.json
 __blobstorage__
 __queuestorage__
 __azurite_db*__.json
-
-# Local Notebooks
-.nnb
-.ipynb

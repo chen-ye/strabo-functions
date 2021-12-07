@@ -1,0 +1,24 @@
+{
+  "bindings": [
+    {
+      "type": "cosmosDBTrigger",
+      "name": "documents",
+      "direction": "in",
+      "leaseCollectionName": "leases",
+      "connectionStringSetting": "strabo_DOCUMENTDB",
+      "databaseName": "Strabo",
+      "collectionName": "Activities",
+      "createLeaseCollectionIfNotExists": true
+    },
+    {
+      "type": "cosmosDB",
+      "direction": "out",
+      "name": "activityPointFeatures",
+      "databaseName": "Strabo",
+      "collectionName": "ActivityPoints",
+      "createIfNotExists": false,
+      "connectionStringSetting": "strabo_DOCUMENTDB"
+    }
+  ],
+  "scriptFile": "../dist/rawActivityToGeoJSON/index.js"
+}
